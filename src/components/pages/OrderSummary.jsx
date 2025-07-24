@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { formatCurrency } from "@/utils/currency";
+import formatCurrency from "@/utils/currency";
 import { orderService } from "@/services/api/orderService";
 import ApperIcon from "@/components/ApperIcon";
 import Home from "@/components/pages/Home";
@@ -222,7 +222,7 @@ const loadOrderSummary = async () => {
         await loadPriceSummary();
       }
 
-      toast.success('Order summary loaded successfully');
+toast.success('Order summary loaded successfully');
 
     } catch (error) {
       console.error('OrderSummary: Critical error loading order summary:', {

@@ -733,9 +733,10 @@ const priorityConfig = {
                           setShowVendorControl(!showVendorControl);
                         } else if (action.path === '/order-summary') {
                           handleOrderSummaryClick();
-                        }
+}
                       }}
                       className="group w-full text-left"
+                    >
                     <div className="relative p-4 rounded-lg border border-gray-200 hover:border-primary hover:shadow-md transition-all duration-200">
                       {/* Priority indicator */}
                       <div className="absolute top-2 right-2 flex items-center space-x-1">

@@ -1564,30 +1564,29 @@ generateFileUrl(fileName) {
 
       return { success: true, payment };
 
-    } catch (error) {
-      // Handle payment failure
-      recurring.totalPayments++;
-      recurring.failedPayments++;
-      recurring.lastPaymentDate = new Date().toISOString();
-      recurring.lastPaymentStatus = 'failed';
+} catch (error) {
+      // Handle payment failure - ensure recurring is defined before use
+      const recurring = this.recurringPayments.find(r => r.Id === scheduledPayment.recurringPaymentId);
+      if (recurring) {
+        recurring.totalPayments++;
+        recurring.failedPayments++;
+        recurring.lastPaymentDate = new Date().toISOString();
+        recurring.lastPaymentStatus = 'failed';
+        recurring.lastPaymentAmount = recurring.amount;
+      }
       
-      // Mark scheduled payment as failed
-      scheduledPayment.status = 'failed';
+      // Update error tracking
       scheduledPayment.failedAt = new Date().toISOString();
       scheduledPayment.failureReason = error.message;
-      scheduledPayment.retryCount = (scheduledPayment.retryCount || 0) + 1;
+scheduledPayment.retryCount = (scheduledPayment.retryCount || 0) + 1;
 
-      // Handle retry logic
-      if (recurring.autoRetry && scheduledPayment.retryCount < recurring.maxRetries) {
-        // Schedule retry
-        const retryDate = new Date();
-        retryDate.setHours(retryDate.getHours() + recurring.retryInterval);
-        
+      // Mark as failed and schedule retry if applicable
+      if (recurring && recurring.autoRetry && scheduledPayment.retryCount < recurring.maxRetries) {
+        const retryDate = new Date(Date.now() + (recurring.retryInterval || 24) * 60 * 60 * 1000);
         const retryPayment = {
           Id: this.scheduledPaymentIdCounter++,
           recurringPaymentId: recurring.Id,
           scheduledDate: retryDate.toISOString(),
-          amount: recurring.amount,
           status: 'pending',
           isRetry: true,
           originalScheduledPaymentId: scheduledPayment.Id,
@@ -1596,14 +1595,12 @@ generateFileUrl(fileName) {
         };
         
         this.scheduledPayments.push(retryPayment);
-      } else {
-        // Max retries reached or auto-retry disabled
-        if (scheduledPayment.retryCount >= recurring.maxRetries) {
-          recurring.status = 'failed';
-          recurring.failedAt = new Date().toISOString();
-          recurring.failureReason = `Max retries (${recurring.maxRetries}) exceeded`;
-        }
       }
+      
+      // Update scheduled payment status
+      scheduledPayment.status = 'failed';
+      scheduledPayment.processedAt = new Date().toISOString();
+      scheduledPayment.error = error.message;
 
       return { success: false, error: error.message };
     }

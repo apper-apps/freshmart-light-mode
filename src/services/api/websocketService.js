@@ -55,10 +55,10 @@ class WebSocketService {
           // Notify listeners of disconnection
           this.notifyListeners('connection_status', { connected: false, timestamp: new Date().toISOString() });
           
-          // Attempt reconnection if not intentionally closed
+// Attempt reconnection if not intentionally closed
           if (event.code !== 1000 && this.reconnectAttempts < this.maxReconnectAttempts) {
             this.scheduleReconnect();
-};
+          }
         };
 
         this.connection.onerror = (error) => {
@@ -158,9 +158,10 @@ class WebSocketService {
           }
         };
 
-      case 'approval_status_changed':
+case 'approval_status_changed':
         return {
-data: {
+          ...baseMessage,
+          data: {
             requestId: Math.floor(Math.random() * 10) + 1,
             status: ['approved', 'rejected'][Math.floor(Math.random() * 2)],
             actionBy: 'admin_user'
@@ -368,11 +369,11 @@ data: {
     
     console.log(`Scheduling WebSocket reconnection attempt ${this.reconnectAttempts} in ${delay}ms`);
     
-    setTimeout(() => {
+setTimeout(() => {
       if (this.reconnectAttempts <= this.maxReconnectAttempts) {
         this.connect().catch(error => {
           console.error('Reconnection attempt failed:', error);
-});
+        });
       } else {
         console.error('Max reconnection attempts reached, giving up');
         this.notifyListeners('connection_failed', {
@@ -422,9 +423,9 @@ data: {
       // Handle objects with non-serializable properties
       if (typeof error === 'object') {
         const serialized = {};
-        for (const key in error) {
+for (const key in error) {
           try {
-const value = error[key];
+            const value = error[key];
             
             // Skip functions and non-serializable objects
             if (typeof value === 'function') continue;
@@ -437,11 +438,11 @@ const value = error[key];
             serialized[key] = value;
           } catch (serializationError) {
             // If serialization fails, convert to string
+            const value = error[key];
             serialized[key] = String(value);
           }
         }
         
-        serialized.timestamp = new Date().toISOString();
         return serialized;
       }
       
@@ -511,13 +512,12 @@ const value = error[key];
             if (value === null || value === undefined) {
               serialized[key] = null;
             } else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-              serialized[key] = value;
+serialized[key] = value;
             } else if (value instanceof Date) {
               serialized[key] = value.toISOString();
-            } else if (typeof Node !== 'undefined' && value instanceof Node) {
-              serialized[key] = '[DOM Node]';
+            } else if (typeof value === 'object' && value !== null) {
+              serialized[key] = this.serializeMessageSafely(value, depth + 1, maxDepth);
             } else if (value instanceof Error) {
-} else if (value instanceof Error) {
               serialized[key] = this.serializeErrorSafely(value);
             } else if (typeof value === 'function') {
               serialized[key] = '[Function]';
@@ -545,13 +545,11 @@ const value = error[key];
           }
         }
       }
-      
-      return serialized;
-} catch (error) {
+return serialized;
+    } catch (error) {
       return String(message);
     }
   }
-  
   // Disconnect WebSocket
   disconnect() {
     if (this.connection) {

@@ -1705,18 +1705,14 @@ const EnhancedBulkActionsModal = ({ products, categories, onUpdate, onClose }) =
     value: '',
     minPrice: '',
     maxPrice: '',
-    discountType: 'percentage',
-    discountValue: '',
-    stockThreshold: 10,
+discountValue: '',
     // Enhanced discount options
     discountType: 'percentage',
-    discountValue: '',
-    discountStartDate: '',
-    discountEndDate: '',
     categoryDiscount: false,
     overrideExisting: false,
     conflictResolution: 'skip' // skip, override, merge
   });
+  const [preview, setPreview] = useState([]);
   const [preview, setPreview] = useState([]);
   const [showPreview, setShowPreview] = useState(false);
   const [validationResults, setValidationResults] = useState([]);

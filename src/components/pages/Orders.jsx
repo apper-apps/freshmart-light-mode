@@ -159,9 +159,8 @@ to="/category/All"
                         <Badge variant="danger" className="text-xs">
                           <ApperIcon name="XCircle" size={12} className="mr-1" />
                           Rejected
-                        </Badge>
+</Badge>
                       )}
-)}
                     </div>
                 </div>
                 <React.Fragment>
@@ -249,11 +248,10 @@ to="/category/All"
                         {isActive && (
                           <div className="w-2 h-2 bg-primary rounded-full mt-1 animate-pulse"></div>
                         )}
-                      </div>
+</div>
                     );
-);
                   })}
-              </div>
+               </div>
             </div>
 
             {/* Order Details Section */}
@@ -374,9 +372,9 @@ to="/category/All"
                                 }}
                               />
                               <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 flex items-center justify-center rounded-lg transition-all">
-                                <ApperIcon name="Eye" size={14} className="text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+<ApperIcon name="Eye" size={14} className="text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                               </div>
-</div>
+                          </div>
                           </div>
                         </div>
                       </div>
@@ -384,9 +382,9 @@ to="/category/All"
                   </div>
                 )}
               </div>
+</div>
               
-{/* Order Items Preview */}
-                <h4 className="text-sm font-medium text-gray-900 mb-3">Items ({order?.items?.length || 0})</h4>
+              {/* Order Items Preview */}
                 <div className="space-y-2">
                   {order?.items?.slice(0, 3)?.map((item, index) => (
                     <div key={index} className="flex items-center space-x-2">
@@ -504,10 +502,10 @@ to="/category/All"
                         {order.walletTransaction.type.replace('_', ' ')}
                       </span>
                     </div>
-                    <div className="flex justify-between">
+<div className="flex justify-between">
                       <span className="text-purple-700">Amount:</span>
-<span className="text-purple-700">Amount:</span>
                       <span className="font-semibold text-purple-900">
+                        {formatCurrency(order.walletTransaction.amount || 0)}
                       </span>
                     </div>
                   </div>

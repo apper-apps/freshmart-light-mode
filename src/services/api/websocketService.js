@@ -1,3 +1,5 @@
+import React from "react";
+import Error from "@/components/ui/Error";
 class WebSocketService {
   constructor() {
     this.connection = null;
@@ -515,14 +517,14 @@ const value = error[key];
             } else if (typeof Node !== 'undefined' && value instanceof Node) {
               serialized[key] = '[DOM Node]';
             } else if (value instanceof Error) {
+} else if (value instanceof Error) {
               serialized[key] = this.serializeErrorSafely(value);
             } else if (typeof value === 'function') {
               serialized[key] = '[Function]';
-            } else if (typeof Window !== 'undefined' && value instanceof Window) {
+            } else if (typeof window !== 'undefined' && value === window) {
               serialized[key] = '[Window]';
             } else if (value instanceof URL) {
               serialized[key] = {
-                type: 'URL',
                 href: value.href,
                 origin: value.origin,
                 pathname: value.pathname,
@@ -545,15 +547,10 @@ const value = error[key];
       }
       
       return serialized;
-    } catch (error) {
+} catch (error) {
       return String(message);
     }
   }
-// Handle plain objects
-      const serialized = {};
-      for (const key in message) {
-        if (Object.prototype.hasOwnProperty.call(message, key)) {
-          try {
   
   // Disconnect WebSocket
   disconnect() {

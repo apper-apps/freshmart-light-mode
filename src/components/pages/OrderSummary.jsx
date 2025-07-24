@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import formatCurrency from "@/utils/currency";
+import { formatCurrency } from "@/utils/currency";
+import { orderService } from "@/services/api/orderService";
 import ApperIcon from "@/components/ApperIcon";
+import Home from "@/components/pages/Home";
+import Orders from "@/components/pages/Orders";
 import Badge from "@/components/atoms/Badge";
 import Button from "@/components/atoms/Button";
 import Error from "@/components/ui/Error";
 import Loading from "@/components/ui/Loading";
-import Orders from "@/components/pages/Orders";
-import Home from "@/components/pages/Home";
-import { orderService } from "@/services/api/orderService";
 
 const OrderSummary = () => {
   const { orderId } = useParams();
@@ -181,10 +181,10 @@ const loadOrderSummary = async () => {
       // Validate critical order data structure with detailed checks
       if (typeof orderData !== 'object') {
         throw new Error(`Invalid order data type received: ${typeof orderData}`);
-      }
-
-      if (!orderData.hasOwnProperty('id') || orderData.id !== numericOrderId) {
-        throw new Error(`Order ID mismatch: expected ${numericOrderId}, received ${orderData.id}`);
+// Check if order exists and has correct ID
+      if (!Object.prototype.hasOwnProperty.call(orderData, 'id') || orderData.id !== numericOrderId) {
+        console.error('OrderSummary: Order ID mismatch or missing - Expected:', numericOrderId, 'Got:', orderData?.id);
+        throw new Error(`Order #${numericOrderId} not found or invalid order data`);
       }
 
       if (!orderData.items || !Array.isArray(orderData.items)) {

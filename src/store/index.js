@@ -4,6 +4,7 @@ import storage from "redux-persist/lib/storage";
 import cartSlice from "./cartSlice";
 import notificationSlice from "./notificationSlice";
 import approvalWorkflowSlice from "./approvalWorkflowSlice";
+
 const persistConfig = {
   key: 'root',
   storage,
@@ -20,10 +21,10 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
   reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
+middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-ignoredActions: [
+        ignoredActions: [
           'persist/PERSIST', 
           'persist/REHYDRATE',
           'approvalWorkflow/setConnectionStatus',
@@ -31,7 +32,9 @@ ignoredActions: [
         ]
       }
     }),
-  devTools: typeof process !== 'undefined' && process.env && process.env.NODE_ENV !== 'production'
+  // Enable DevTools only in development with safe environment detection
+  devTools: (typeof process !== 'undefined' && process?.env?.NODE_ENV !== 'production') || 
+            (typeof import.meta !== 'undefined' && import.meta.env?.DEV)
 });
 
 export const persistor = persistStore(store);

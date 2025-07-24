@@ -1237,8 +1237,8 @@ generateFileUrl(fileName) {
     // Simulate file URL generation
     return `https://storage.example.com/proofs/${Date.now()}-${fileName}`;
   }
-
-  // Recurring Payment Automation Methods
+// Recurring Payment Automation Methods
+  // Note: 'recurring' variable is properly scoped within class methods
   async createRecurringPayment(recurringData) {
     await this.delay(500);
     

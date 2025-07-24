@@ -1,4 +1,6 @@
+import React from "react";
 import vendorsData from "@/services/mockData/vendors.json";
+import Error from "@/components/ui/Error";
 
 class VendorService {
   constructor() {
@@ -443,20 +445,19 @@ async createVendor(vendorData) {
     return maxId + 1;
   }
 
-  isValidEmail(email) {
+isValidEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   }
 
   isValidPhone(phone) {
-    const phoneRegex = /^[\+]?[\d\s\-\(\)]{10,}$/;
+    const phoneRegex = /^[+]?[\d\s\-()]{10,}$/;
     return phoneRegex.test(phone);
-}
+  }
 
   async delay(ms = 200) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
-
   // Admin control functions
   async toggleVendorStatus(vendorId, status) {
     await this.delay(300);

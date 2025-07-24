@@ -20,7 +20,6 @@ import Badge from "@/components/atoms/Badge";
 import Button from "@/components/atoms/Button";
 import Error from "@/components/ui/Error";
 import Loading from "@/components/ui/Loading";
-
 const AdminDashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -726,18 +725,17 @@ const priorityConfig = {
               const priorityInfo = priorityConfig[action.priority];
               
               return (
-action.isAction ? (
-                  <button
-                    key={action.path}
-                    onClick={() => {
-                      if (action.path === '#vendor-control') {
-                        setShowVendorControl(!showVendorControl);
-                      } else if (action.path === '/order-summary') {
-                        handleOrderSummaryClick();
-                      }
-                    }}
-                    className="group w-full text-left"
-                  >
+                <React.Fragment key={action.path}>
+                  {action.isAction ? (
+                    <button
+                      onClick={() => {
+                        if (action.path === '#vendor-control') {
+                          setShowVendorControl(!showVendorControl);
+                        } else if (action.path === '/order-summary') {
+                          handleOrderSummaryClick();
+                        }
+                      }}
+                      className="group w-full text-left"
                     <div className="relative p-4 rounded-lg border border-gray-200 hover:border-primary hover:shadow-md transition-all duration-200">
                       {/* Priority indicator */}
                       <div className="absolute top-2 right-2 flex items-center space-x-1">
@@ -802,8 +800,9 @@ action.isAction ? (
                         </div>
                       </div>
                     </div>
-                  </Link>
-                )
+</Link>
+                )}
+                </React.Fragment>
               );
             })}
           </div>

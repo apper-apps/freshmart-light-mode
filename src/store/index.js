@@ -23,13 +23,13 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: [
+ignoredActions: [
           'persist/PERSIST', 
           'persist/REHYDRATE',
           'approvalWorkflow/setConnectionStatus',
           'approvalWorkflow/addRealTimeNotification'
-]
-}
+        ]
+      }
     }),
   devTools: typeof process !== 'undefined' && process.env && process.env.NODE_ENV !== 'production'
 });

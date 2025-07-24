@@ -1,4 +1,6 @@
+import React from "react";
 import productsData from "@/services/mockData/products.json";
+import Error from "@/components/ui/Error";
 class ProductService {
   constructor() {
     this.products = [...productsData];
@@ -1013,14 +1015,13 @@ const mockUnsplashImages = Array.from({ length: loadMore ? 12 : 6 }, (_, index) 
       'snacks': ['crunchy', 'satisfying', 'portable', 'tasty', 'convenient', 'wholesome', 'guilt-free'],
       
       // Legacy support
+// Legacy support
       'Fresh Vegetables': ['organic', 'healthy', 'green', 'fresh', 'natural'],
-'Fresh Vegetables': ['organic', 'healthy', 'green', 'fresh', 'natural'],
       'Tropical Fruits': ['colorful', 'exotic', 'sweet', 'vitamin', 'tropical'],
       'Dairy Products': ['creamy', 'calcium', 'protein', 'fresh', 'natural'],
       'Premium Meat': ['protein', 'quality', 'fresh', 'gourmet', 'butcher'],
       'Artisan Bakery': ['handmade', 'artisan', 'golden', 'crispy', 'traditional'],
-      'Beverages': ['refreshing', 'cold', 'thirst', 'natural', 'healthy']
-    };
+      'Beverages': ['refreshing', 'cold', 'thirst', 'natural', 'healthy']    };
     
     const tags = [...baseTags, ...(categoryTags[category] || ['food', 'ingredient', 'culinary'])];
     return [...new Set(tags)]; // Remove duplicates

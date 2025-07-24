@@ -56,9 +56,10 @@ class WebSocketService {
           // Attempt reconnection if not intentionally closed
           if (event.code !== 1000 && this.reconnectAttempts < this.maxReconnectAttempts) {
             this.scheduleReconnect();
-          }
+};
         };
-this.connection.onerror = (error) => {
+
+        this.connection.onerror = (error) => {
           console.error('WebSocket error:', error);
           this.isConnecting = false;
           
@@ -72,7 +73,6 @@ this.connection.onerror = (error) => {
           // Reject with safe error object
           reject(this.serializeErrorSafely(error));
         };
-
 } catch (error) {
         this.isConnecting = false;
         reject(this.serializeErrorSafely(error));
@@ -158,9 +158,8 @@ this.connection.onerror = (error) => {
 
       case 'approval_status_changed':
         return {
-          ...baseMessage,
-          data: {
-requestId: Math.floor(Math.random() * 10) + 1,
+data: {
+            requestId: Math.floor(Math.random() * 10) + 1,
             status: ['approved', 'rejected'][Math.floor(Math.random() * 2)],
             actionBy: 'admin_user'
           }
@@ -371,9 +370,9 @@ requestId: Math.floor(Math.random() * 10) + 1,
       if (this.reconnectAttempts <= this.maxReconnectAttempts) {
         this.connect().catch(error => {
           console.error('Reconnection attempt failed:', error);
-        });
+});
       } else {
-console.error('Max reconnection attempts reached, giving up');
+        console.error('Max reconnection attempts reached, giving up');
         this.notifyListeners('connection_failed', {
           reason: 'Max reconnection attempts exceeded',
           attempts: this.reconnectAttempts 
@@ -423,9 +422,9 @@ console.error('Max reconnection attempts reached, giving up');
         const serialized = {};
         for (const key in error) {
           try {
-            const value = error[key];
+const value = error[key];
             
-// Skip functions and non-serializable objects
+            // Skip functions and non-serializable objects
             if (typeof value === 'function') continue;
             
             // Skip DOM nodes
@@ -451,14 +450,19 @@ console.error('Max reconnection attempts reached, giving up');
     }
   }
   
-  // Safe message serialization to prevent DataCloneError
-  serializeMessageSafely(message) {
+// Safe message serialization to prevent DataCloneError
+  serializeMessageSafely(message, depth = 0, maxDepth = 5) {
     if (!message) return null;
     
     try {
       // Handle primitive types
       if (typeof message !== 'object' || message === null) {
         return message;
+      }
+      
+      // Prevent infinite recursion
+      if (depth >= maxDepth) {
+        return '[Object - Max Depth Reached]';
       }
       
       // Handle URL objects specifically - convert to plain object
@@ -491,36 +495,32 @@ console.error('Max reconnection attempts reached, giving up');
       
       // Handle arrays
       if (Array.isArray(message)) {
-        return message.map(item => this.serializeMessageSafely(item));
+        return message.map(item => this.serializeMessageSafely(item, depth + 1, maxDepth));
       }
       
       // Handle plain objects
       const serialized = {};
       for (const key in message) {
-        if (message.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(message, key)) {
           try {
             const value = message[key];
             
-            // Skip functions
-            if (typeof value === 'function') {
+            // Handle different types of values
+            if (value === null || value === undefined) {
+              serialized[key] = null;
+            } else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+              serialized[key] = value;
+            } else if (value instanceof Date) {
+              serialized[key] = value.toISOString();
+            } else if (typeof Node !== 'undefined' && value instanceof Node) {
+              serialized[key] = '[DOM Node]';
+            } else if (value instanceof Error) {
+              serialized[key] = this.serializeErrorSafely(value);
+            } else if (typeof value === 'function') {
               serialized[key] = '[Function]';
-              continue;
-            }
-            
-            // Skip DOM nodes
-            if (value instanceof Node) {
-              serialized[key] = `[${value.constructor.name}]`;
-              continue;
-            }
-            
-            // Skip Window objects
-            if (typeof Window !== 'undefined' && value instanceof Window) {
-              serialized[key] = `[${value.constructor.name}]`;
-              continue;
-            }
-            
-            // Handle URL objects
-            if (value instanceof URL) {
+            } else if (typeof Window !== 'undefined' && value instanceof Window) {
+              serialized[key] = '[Window]';
+            } else if (value instanceof URL) {
               serialized[key] = {
                 type: 'URL',
                 href: value.href,
@@ -532,17 +532,14 @@ console.error('Max reconnection attempts reached, giving up');
                 hostname: value.hostname,
                 port: value.port
               };
-              continue;
-            }
-            
-            // Handle nested objects recursively
-            if (typeof value === 'object' && value !== null) {
-              serialized[key] = this.serializeMessageSafely(value);
+            } else if (typeof value === 'object') {
+              // Recursively serialize objects (with depth limit)
+              serialized[key] = this.serializeMessageSafely(value, depth + 1, maxDepth);
             } else {
-              serialized[key] = value;
+              serialized[key] = String(value);
             }
-          } catch (serializationError) {
-            serialized[key] = String(message[key]);
+          } catch (err) {
+            serialized[key] = '[Serialization Error]';
           }
         }
       }
@@ -552,6 +549,11 @@ console.error('Max reconnection attempts reached, giving up');
       return String(message);
     }
   }
+// Handle plain objects
+      const serialized = {};
+      for (const key in message) {
+        if (Object.prototype.hasOwnProperty.call(message, key)) {
+          try {
   
   // Disconnect WebSocket
   disconnect() {

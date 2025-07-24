@@ -1,4 +1,5 @@
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
+import React from "react";
 import { 
   addToCart as addToCartAction, 
   removeFromCart as removeFromCartAction, 
@@ -12,7 +13,6 @@ import {
   selectIsProductInCart,
   selectProductQuantityInCart
 } from '@/store/cartSlice';
-
 export const useCart = () => {
   const dispatch = useDispatch();
   
@@ -48,15 +48,16 @@ export const useCart = () => {
   const getCartCount = () => cartCount;
   const getCartItems = () => cart;
   
-  const isProductInCart = (productId) => {
+// Hook-based functions that must be called within React components
+  const useIsProductInCart = (productId) => {
     return useSelector(selectIsProductInCart(productId));
   };
   
-  const getProductQuantityInCart = (productId) => {
+  const useProductQuantityInCart = (productId) => {
     return useSelector(selectProductQuantityInCart(productId));
   };
 
-  return {
+return {
     cart,
     addToCart,
     removeFromCart,
@@ -65,8 +66,8 @@ export const useCart = () => {
     getCartTotal,
     getCartCount,
     getCartItems,
-    isProductInCart,
-    getProductQuantityInCart,
+    useIsProductInCart,
+    useProductQuantityInCart,
     isLoading
   };
 };

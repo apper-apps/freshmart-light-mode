@@ -754,7 +754,7 @@ const performanceMonitor = {
     this.errors.push(errorData);
     
     // Update error category counters
-    if (this.errorCategories.hasOwnProperty(errorData.category)) {
+if (Object.prototype.hasOwnProperty.call(this.errorCategories, errorData.category)) {
       this.errorCategories[errorData.category]++;
     } else {
       this.errorCategories.unknown++;
